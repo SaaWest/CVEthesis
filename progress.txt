@@ -1,0 +1,7 @@
+5/2/26
+- Made API request based on CVE to NIST API
+- Made API request to OSV list all applicable ecosystems (OS) applicable to CVE
+- Made function to compare ecosystems to docker hub available images to pull
+GOALS:
+	- Make a graph function to generate dockerfiles
+		- consider other tools like jinja2

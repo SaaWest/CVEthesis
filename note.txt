@@ -1,0 +1,66 @@
+<table class="table table-striped table-condensed table-bordered detail-table" data-testid="vuln-hyperlinks-table">
+                                        <thead>
+                                        <tr>
+                                            <th>URL</th>
+                                            <th>Source(s)</th>
+                                            <th>Tag(s)</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr data-testid="vuln-hyperlinks-row-0">
+
+                                            <!-- URL -->
+                                            <td data-testid="vuln-hyperlinks-link-0">
+                                                <a href="https://github.com/pydicom/pydicom/commit/6414f01a053dff925578799f5a7208d2ae585e82" target="_blank" rel="noopener noreferrer" class="external">https://github.com/pydicom/pydicom/commit/6414f01a053dff925578799f5a7208d2ae585e82</a>
+                                            </td>
+
+                                            <!-- Source (extSource) -->
+                                            <td data-testid="vuln-hyperlinks-source-0">GitHub, Inc.</td>
+
+                                            <!-- Tags -->
+                                            <td data-testid="vuln-hyperlinks-tags-0">
+                                                <span>
+                                                    <span class="badge">Patch</span>&nbsp;
+                                                </span>
+                                            </td>
+                                        </tr>
+                                        <tr data-testid="vuln-hyperlinks-row-1">
+
+                                            <!-- URL -->
+                                            <td data-testid="vuln-hyperlinks-link-1">
+                                                <a href="https://github.com/pydicom/pydicom/releases/tag/v3.0.2" target="_blank" rel="noopener noreferrer" class="external">https://github.com/pydicom/pydicom/releases/tag/v3.0.2</a>
+                                            </td>
+
+                                            <!-- Source (extSource) -->
+                                            <td data-testid="vuln-hyperlinks-source-1">GitHub, Inc.</td>
+
+                                            <!-- Tags -->
+                                            <td data-testid="vuln-hyperlinks-tags-1">
+                                                <span>
+                                                    <span class="badge">Product</span>&nbsp;
+                                                </span><span>
+                                                    <span class="badge">Release Notes</span>&nbsp;
+                                                </span>
+                                            </td>
+                                        </tr>
+                                        <tr data-testid="vuln-hyperlinks-row-2">
+
+                                            <!-- URL -->
+                                            <td data-testid="vuln-hyperlinks-link-2">
+                                                <a href="https://github.com/pydicom/pydicom/security/advisories/GHSA-v856-2rf8-9f28" target="_blank" rel="noopener noreferrer" class="external">https://github.com/pydicom/pydicom/security/advisories/GHSA-v856-2rf8-9f28</a>
+                                            </td>
+
+                                            <!-- Source (extSource) -->
+                                            <td data-testid="vuln-hyperlinks-source-2">GitHub, Inc.</td>
+
+                                            <!-- Tags -->
+                                            <td data-testid="vuln-hyperlinks-tags-2">
+                                                <span>
+                                                    <span class="badge">Exploit</span>&nbsp;
+                                                </span><span>
+                                                    <span class="badge">Vendor Advisory</span>&nbsp;
+                                                </span>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>

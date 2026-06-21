@@ -1,0 +1,30 @@
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.8/site-packages/reportlab/graphics/renderPM.py", line 47, in _getPMBackend
+    import rlPyCairo as M
+ModuleNotFoundError: No module named 'rlPyCairo'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.8/site-packages/reportlab/graphics/renderPM.py", line 50, in _getPMBackend
+    import _rl_renderPM as M
+ModuleNotFoundError: No module named '_rl_renderPM'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "code_svg.py", line 11, in <module>
+    renderPM.drawToFile(drawing, saved_image_path, fmt="PNG")
+  File "/usr/local/lib/python3.8/site-packages/reportlab/graphics/renderPM.py", line 743, in drawToFile
+    c = drawToPMCanvas(d, dpi=dpi, bg=bg, configPIL=configPIL, showBoundary=showBoundary,backend=backend,backendFmt=backendFmt, **kwds)
+  File "/usr/local/lib/python3.8/site-packages/reportlab/graphics/renderPM.py", line 728, in drawToPMCanvas
+    c = PMCanvas(d.width, d.height, dpi=dpi, bg=bg, configPIL=configPIL, backend=backend,backendFmt=backendFmt)
+  File "/usr/local/lib/python3.8/site-packages/reportlab/graphics/renderPM.py", line 317, in __init__
+    self.__dict__['_gs'] = self._getGState(w,h,bg,backend,fmt=backendFmt)
+  File "/usr/local/lib/python3.8/site-packages/reportlab/graphics/renderPM.py", line 331, in _getGState
+    mod = _getPMBackend(backend)
+  File "/usr/local/lib/python3.8/site-packages/reportlab/graphics/renderPM.py", line 52, in _getPMBackend
+    raise RenderPMError(f"""cannot import desired renderPM backend {backend}
+reportlab.graphics.utils.RenderPMError: cannot import desired renderPM backend rlPyCairo
+Seek advice at the users list see
+https://pairlist2.pair.net/mailman/listinfo/reportlab-users

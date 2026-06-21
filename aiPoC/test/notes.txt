@@ -1,0 +1,56 @@
+Good — your PoC is now actually executing. The current issue is just a missing rendering backend for ReportLab.
+
+The important error is:
+
+ModuleNotFoundError: No module named 'rlPyCairo'
+
+and:
+
+cannot import desired renderPM backend rlPyCairo
+
+ReportLab needs either:
+
+rlPyCairo
+or _rl_renderPM
+
+to render SVGs into PNGs.
+
+Easiest fix
+
+Install:
+
+rlPyCairo
+pycairo
+
+inside the container.
+
+Add this to your requirements.txt:
+
+rlPyCairo
+pycairo
+
+or explicitly:
+
+reportlab==3.5.34
+svglib==1.1.0
+rlPyCairo
+pycairo
+
+Example:
+FROM python:3.8
+
+WORKDIR /app
+
+RUN apt-get update && apt-get install -y \
+    libcairo2-dev \
+    pkg-config \
+    python3-dev \
+    gcc
+
+COPY requirements.txt .
+
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY . .
+
+CMD ["python3", "code_svg.py"]

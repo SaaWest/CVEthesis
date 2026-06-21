@@ -1,0 +1,7 @@
+- figure out how to tackle the right python version to the right OS image
+	- mapping
+	- error handling
+	- etc.
+- Error handling to edit requirements.txt, dependencies for Dockerfile, etc.
+
+- Ensure EOL images are not used unless necessary.

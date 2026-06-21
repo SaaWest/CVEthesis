@@ -1,0 +1,1 @@
+https://files.pythonhosted.org/packages/f4/46/a3d3ae2e04222ef70e8b9fd19296afe2d79ce1c818a754b7621a87dfd632/svglib-0.9.3.tar.gz
