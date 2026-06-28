@@ -7,7 +7,7 @@ class SecurityGraph:
     # ---------- Nodes ----------
 
     def add_os(self, name, version, safe=True):
-        node_id = f"os:{name}:{version}"
+        node_id = f"{name}:{version}"
 
         self.g.add_node(
             node_id,
@@ -20,7 +20,7 @@ class SecurityGraph:
         return node_id
 
     def add_runtime(self, runtime, version):
-        node_id = f"runtime:{runtime}:{version}"
+        node_id = f"{runtime}:{version}"
 
         self.g.add_node(
             node_id,
@@ -32,7 +32,7 @@ class SecurityGraph:
         return node_id
 
     def add_package(self, ecosystem, name, version):
-        node_id = f"pkg:{ecosystem}:{name}:{version}"
+        node_id = f"{ecosystem}:{name}:{version}"
 
         self.g.add_node(
             node_id,
@@ -44,17 +44,17 @@ class SecurityGraph:
 
         return node_id
 
-    def add_cve(self, cve_id, severity=None, exploited=False):
-        node_id = f"cve:{cve_id}"
+    #def add_cve(self, cve_id, severity=None, exploited=False):
+        #node_id = f"{cve_id}"
 
-        self.g.add_node(
-            node_id,
-            type="cve",
-            severity=severity,
-            exploited=exploited
-        )
+        #self.g.add_node(
+            #node_id,
+            #type="cve",
+            #severity=severity,
+            #exploited=exploited
+        #)
 
-        return node_id
+        #return node_id
 
     # ---------- Relationships ----------
 

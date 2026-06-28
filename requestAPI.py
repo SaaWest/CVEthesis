@@ -109,9 +109,11 @@ def getPythonVersion_Pypi(whlReleases, product_name, ecoProductSysVersion):
                 if "url" in item
             ]
             pyVer = [i for i in pyVer if i != "source"]
+            if len(pyVer) == 0:
+                pyVer.append("py3")
             whlURL = [i for i in whlURL if (".exe" not in i) or ("win" not in i)]
             print("WHL URLs: ", list(set(whlURL)))
-            return list(set(pyVer)), list(set(whlURL))
+            return sorted(list(set(pyVer))), list(set(whlURL))
         except:
             print("EEROR: Possibly no python versions from PyPI")
             return None
@@ -136,6 +138,7 @@ def compare_osvEcosys_DockHubImages(product):
         for x in set(makeOSV_EcosystemRequest(product))
     ]
     #osList = list(set(makeOSV_EcosystemRequest(product)))
+    print("OSLIST: ", osList)
     for i in osList[:]:
         dockhub_tags = {"tags": []}
         if ":" in i:
@@ -146,7 +149,7 @@ def compare_osvEcosys_DockHubImages(product):
                 continue
             dockhub_tags = result
             tags = dockhub_tags["tags"]
-            if version not in tags:
+            if not any(version in t for t in tags):
                 osList.remove(i)
         elif i is not None:
             result = get_tags(i.lower())
@@ -159,13 +162,17 @@ def compare_osvEcosys_DockHubImages(product):
         else:
             continue
     osList[:] = [item for item in osList if 'pypi' not in item.lower()]
-    if len(osList) == 0:
+    if not any("ubuntu" in i.lower() for i in osList):
         osList.append("Ubuntu:18.04")
-    osList = [i for i in osList if any(i.startswith(a) for a in approvedOS)]
+    #osList = [i for i in osList if any(i.startswith(a) for a in approvedOS)]
+    osList = [
+        i for i in osList
+        if i and i.split(":")[0].lower() in [a.lower() for a in approvedOS]
+    ]
     #if len(osList) == 0:
         #osList.append("Ubuntu:18.04")
     print("OS ", osList)
-    return osList        
+    return sorted(osList)        
             
 
 
@@ -271,6 +278,8 @@ def getPython(version):
     Function to retrieve the compressed file for python versions based on PyPI versions that label each package
     version with language version.
     '''
+    if len(version) == 0:
+        return
     print("VERSION ", version)
     ver = version[0].split(".")
     query = ["curl", "-s", f"https://www.python.org/ftp/python/"]

@@ -17,28 +17,29 @@ versions = requestAPI.get_versions(response)
 #criteria = cpeParser.parse_product(versions)
 #versionStart = parse_json.get_startDefault(versions)
 allVersions = cpeParser.get_cpeVersions(versions)
-print("ALL VERSIONS", allVersions)
+#print("ALL VERSIONS", allVersions)
 #tags = requestAPI.get_tags()
 verList = cpeParser.cpe_filterVersions(allVersions)
 #print("dockerCPE_Versions", verList)
 #startVer = cpeParser.get_startDefault(versions)
 #endVer = cpeParser.get_endDefault(versions)
 product = cpeParser.parse_productAndVersion(versions, versionList=verList)
-print("\nLibrary \n", product)
+#print("\nLibrary \n", product)
 eco = requestAPI.makeOSV_EcosystemRequest(product)
 #print(verionList)
-print("\nMake OSV", eco)
-compareOS = requestAPI.compare_osvEcosys_DockHubImages(product)
+#print("\nMake OSV", eco)
+compareOS = requestAPI.compare_osvEcosys_DockHubImages(product) #compare OSV to dockerhub base/os list
 #print(f"Compare List ", compareOS)
 
 whlFile = requestAPI.makePyPi_aptRequest(product)
-#print("Wheel File ", whlFile)
+#print("\nWheel File \n", whlFile) # get all files then call another function to filter (.whl)
 
 whlVersion, whlURL = requestAPI.getPythonVersion_Pypi(whlFile, product, eco)
-print("Wheel Version ", whlVersion)
-print("WHEEL URL ", whlURL )
+print("Python Version(s) ", whlVersion) # get python release version number(s)
+print("WHEEL URL ", whlURL ) # get filtered list that only has the .whl or .tar.gz file
+
 downloadPython = requestAPI.getPython(whlVersion)
-print("downloadeding Python file ", downloadPython)
+print("downloadeding Python file ", downloadPython) #get python .tgz based on python version
 #filter = parse_json.filter_versions(versions, allVersions)
 #print(filter)
 
@@ -100,8 +101,8 @@ path.append(languageFile.id)
 
 ## TODO: Stills needs an exit for applications that have flask or others; remove  -it and handle errors some other way
 ## make the Dockerfile
-#makeRequirements(graph=graph, path=path)
-#makeDockerfile(graph=graph, path=path)
+makeRequirements(graph=graph, path=path)
+makeDockerfile(graph=graph, path=path)
 #
 #build image
 #builder = build_Dockerfile(sys.argv[1])

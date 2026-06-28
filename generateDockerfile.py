@@ -7,12 +7,196 @@ def makeDockerfile(graph, path, error=False, installs=[]):
     print("PATH: ")
     print(len(path))
     print(path)
-    base = []
-    pathFile = Path("requirements.txt")
-    ## TODO: REDO conditionals for file creation 6/07/26
-    for id in path:
-        node = graph.g.nodes[id]
+    
+    dockerFile = {
+        "base": "",
+        "env": [],
+        "system": set(),
+        "python": {
+            "enabled": False,
+            "version": 3,
+            "pip_reqs": False,
+            "venv": False
+        },
+        "files": {
+            "flag": False,
+            "copy": "",
+        },
+        #"zip": {
+            #"work": ""
+            #"copy": 
+        #}
+        "filter": "",
+        "run": [],
+        "cmd": []
+    } 
+    #requireFile = any(
+    #"ARTIFACT" in graph.g.nodes[node]["type"]
+    #for node in path
+    #)
+    #if requireFile:
+        #makeDockerfile(path=path, graph=graph)
 
+    pathFile = Path("requirements.txt")
+    osPy_flag = False
+    #pyThree = False
+
+    ## TODO: REDO conditionals for file creation 6/07/26
+    for node in path:
+        print("KEYS ", graph.g.nodes[node].keys())
+        n = graph.g.nodes[node]["type"]
+        print("NODE: ", n)
+        if "CVE" in n: # don't need for base
+            print("CVE", n)
+
+        elif "BASE" in n:
+            print("BASE", n)
+            os = graph.g.nodes[node]["distribution"]
+            #base.append(f"FROM {os.lower()}")
+            #base.append(f"ENV DEBIAN_FRONTEND=noninteractive\n")
+            dockerFile["base"] = f"FROM {os.lower()}"
+            dockerFile["env"].append("ENV DEBIAN_FRONTEND=noninteractive")
+            if float(os.split(":")[1]) > 23.04: 
+                osPy_flag = True
+        
+        elif "PACKAGE" in n:
+            eco = graph.g.nodes[node]["ecosystem"]
+            print("PACKAGE", eco)
+            lanVer = eco[0]
+            print("ECO", lanVer)
+            if castFloat(eco=lanVer):
+                if float(lanVer) >= 3.0:
+                    dockerFile["python"]["enabled"] = True
+                    dockerFile["python"]["version"] = 3
+                    #pyThree = True 
+                    dockerFile["system"].update(["RUN apt-get update && apt-get install -y",
+                                "python3",
+                                "python3-dev", 
+                                "python3-pip", 
+                                "python3-venv", 
+                                "curl", 
+                                "wget", 
+                                "build-essential"
+                                ])
+                    #os = graph.g.nodes[node]["distribution"]
+                    #if float(os.split(":")[1]) > 23.04: 
+                    if pathFile.exists():
+                        dockerFile["files"]["flag"] = True
+                        dockerFile["files"]["copy"] = "COPY requirements.txt ."
+                        if osPy_flag:
+                            dockerFile["run"].append("RUN python3 -m venv /venv\n" \
+                                        "ENV PATH=\"/venv/bin:$PATH\"")
+                            dockerFile["run"].append("RUN python3 -m pip install --no-cache-dir -r requirements.txt")
+                        else:
+                            dockerFile["run"].append("RUN python3 -m pip install --no-cache-dir -r requirements.txt")
+                else:
+                    dockerFile["system"].update(["RUN apt-get update && apt-get install -y",
+                    "python", 
+                    "python-dev", 
+                    "python-pip", 
+                    "build-essential"
+                    ])                        
+            else:
+                if "py3" in eco:
+                    dockerFile["python"]["enabled"] = True
+                    dockerFile["python"]["version"] = 3
+                    #pyThree = True
+                    dockerFile["system"].update(["RUN apt-get update && apt-get install -y",
+                    "python3",
+                    "python3-dev", 
+                    "python3-pip",
+                    "python3-venv",
+                    "curl",
+                    "wget",
+                    "build-essential"
+                    ])
+                    #os = graph.g.nodes[node]["distribution"]
+                    #if float(os.split(":")[1]) > 23.04:
+                    if pathFile.exists():
+                        dockerFile["files"]["flag"] = True
+                        dockerFile["files"]["copy"] = "COPY requirements.txt ."
+                        if osPy_flag:
+                            dockerFile["run"].append("RUN python3 -m venv /venv\n" \
+                                    "ENV PATH=\"/venv/bin:$PATH\"")
+                            dockerFile["run"].append("RUN python3 -m pip install --no-cache-dir -r requirements.txt")
+                        else:
+                            dockerFile["run"].append("RUN python3 -m pip install --no-cache-dir -r requirements.txt")
+                    #base.append("RUN python3 -m venv /venv\n" \
+                    #                "ENV PATH=\"/venv/bin:$PATH\"")
+                    #base.append("RUN python3 -m pip install --no-cache-dir -r requirements.txt")
+                else:
+                    dockerFile["system"].update(["RUN apt-get update && apt-get install -y",
+                    "python", 
+                    "python-dev",
+                    "python-pip", 
+                    "build-essential"
+                    ])
+                print("NOT A FLOAT")
+        elif "VERSION" in n: # filter like rsa==3.9
+            #print("VERSION", n)
+            #filter = graph.g.nodes[node]["versionFilter"]
+            #pkg = graph.g.nodes[node]["package"]
+            #print("FILTER: ", filter)
+            #print("PACK : ", pkg)
+            if not pathFile.exists():
+                filter = graph.g.nodes[node]["versionFilter"]
+                pkg = graph.g.nodes[node]["package"]
+                dockerFile["filter"] = f"RUN python3 -m pip install {pkg}{filter}"
+                print("FILTER", filter)
+        elif "EXPLOIT" in n: #don't need / delete later
+            print("EXPLOIT", n)
+        #elif "ARTIFACT" in n: #.whl /.tar.gz file
+            #print("ARTIFACT", n)
+            #url = graph.g.nodes[node]["url"]
+            #makeRequirements(graph, path)
+            #print("URL ", url)
+
+        elif "FILE" in n: # language file (ex: Python-3.6.0.tgz) to set PATH in container no need for python version in some cases 
+            file = graph.g.nodes[node]["file"]
+            print("FILE", file)
+        else:
+            print("ELSE")
+
+    file = renderFile(dockerfile=dockerFile)
+    with open("Dockerfile", "w") as dock:
+        dock.write(file)
+    
+    return file
+
+def renderFile(dockerfile):
+    lines = []
+        # 1. BASE (must be first)
+    if dockerfile["base"]:
+        lines.append(dockerfile["base"])
+
+    # 2. ENV
+    lines.extend(dockerfile["env"])
+
+    # 3. SYSTEM PACKAGES
+    if dockerfile["system"]:
+        lines.append(" ".join(sorted(dockerfile["system"])))
+
+    # 4. REQUIREMENTS FILE
+    if dockerfile["files"]["flag"]:
+        lines.append(dockerfile["files"]["copy"])
+    # 5. VERSION and FILTER CONDITIONAL
+    else:
+        lines.append(dockerfile["filter"])
+
+    # 5. OTHER FILES
+    #for f in state["files"]:
+        #if not f.startswith("pip:"):
+            #lines.append(f"COPY {f} .")
+    # TODO: LATER may need to implement file/module groups i.e. bash, python3 -m package.module,scan multiple file heuristics, repo-packages python3 -m package, or simply copy a folder and run from CLI: docker run -it image bash
+    lines.append("\nCOPY poc.py .\n")
+    # 6. FINAL CMD (always last)
+    if dockerfile["python"]["enabled"]:
+        lines.append('CMD ["python3", "poc.py"]')
+    else:
+        lines.append('CMD ["python", "poc.py"]')
+
+    return "\n".join(lines)
+ 
     if len(path) > 5: #and ("source" in eco):
         print("PATH ", path)
         #image = path[-1]
@@ -68,12 +252,7 @@ def makeDockerfile(graph, path, error=False, installs=[]):
             #base.append("\nCMD [\"python3\", \"poc.py\"]")
         #else:
             #base.append("\nCMD [\"python\", \"poc.py\"]")
-    file = "\n".join(base)
-    print(file)
-    with open("Dockerfile", "w") as dock:
-        dock.write(file)
-    
-    return base 
+
 
 def setup(path, graph):
     versionNode = path[2]
